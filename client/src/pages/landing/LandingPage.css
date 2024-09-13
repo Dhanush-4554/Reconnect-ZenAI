@@ -78,16 +78,13 @@
   font-style: normal;
 }
 
-body {
+.LandingPage {
+  color: white;
   background: #141e30;
   background: -webkit-linear-gradient(to right, #243b55, #141e30);
   background: linear-gradient(to right, #243b55, #141e30);
   margin: 0;
   padding: 0;
-}
-
-.LandingPage {
-  color: white;
 }
 
 .nav-bar {
