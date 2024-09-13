@@ -1,0 +1,270 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+.ubuntu-light {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.ubuntu-regular {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.ubuntu-medium {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.ubuntu-bold {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.poppins-thin {
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.poppins-extralight {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.poppins-light {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.poppins-medium {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.poppins-semibold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.poppins-bold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.poppins-extrabold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.poppins-black {
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+body {
+  background: #141e30;
+  background: -webkit-linear-gradient(to right, #243b55, #141e30);
+  background: linear-gradient(to right, #243b55, #141e30);
+  margin: 0;
+  padding: 0;
+}
+
+.LandingPage {
+  color: white;
+}
+
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 15px auto;
+  width: 90vw;
+  height: 50px;
+  border: 1px solid #6050dc;
+  border-radius: 25px;
+  filter: drop-shadow(0px 4px 8px rgba(122, 76, 168, 0.4));
+}
+
+.nav-bar .logo {
+  font-size: x-large;
+}
+
+.nav-items {
+  width: 25%;
+  margin: 5px;
+}
+
+.nav-items button {
+  width: 120px;
+  height: 50px;
+  border-radius: 25px;
+  margin: 5px;
+  cursor: pointer;
+  border: none;
+  font-size: medium;
+  font-weight: bold;
+  background-color: #ffffff;
+  color: #333333;
+  transition: background-color 0.3s ease-out, color 0.3s ease-out,
+    transform 0.3s ease-out, border 0.3s ease-out;
+}
+
+.nav-items button:hover {
+  border: 2px solid #141e30;
+  color: #141e30;
+  transform: scale(1.1);
+  filter: drop-shadow(0px 4px 8px rgba(122, 76, 168, 0.4));
+}
+
+.land {
+  width: 80vw;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 120px;
+}
+
+.land-body {
+  width: 40%;
+  height: 60vh;
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-bottom: 30px;
+}
+
+.land-body h1 {
+  font-size: 4rem;
+  filter: drop-shadow(0px 4px 8px rgba(122, 76, 168, 0.9));
+  border-radius: 50%;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  width: 60%;
+  background: linear-gradient(to right, #ffffff, transparent);
+  margin: 0;
+}
+
+.land-content {
+  font-size: larger;
+}
+
+.land-start {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.start-btn {
+  width: 150px;
+  height: 50px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.start-btn:hover {
+  border: 2px solid #141e30;
+  transition: ease-in-out;
+}
+
+.land-specs {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.ft-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 250px;
+  text-align: center;
+  /* border: 1px solid #141e30; */
+  border-radius: 50%;
+  background-color: #141e30;
+}
+
+.ft-desc h4 {
+  text-align: center;
+}
+
+.bn632-hover {
+  width: 160px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  margin: 20px;
+  height: 55px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+  border-radius: 50px;
+  -o-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.bn632-hover:hover {
+  background-position: 100% 0;
+  -o-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.bn632-hover:focus {
+  outline: none;
+}
+
+.bn632-hover.bn20 {
+  background-image: linear-gradient(
+    to right,
+    #667eea,
+    #764ba2,
+    #6b8dd6,
+    #8e37d7
+  );
+  box-shadow: 0 4px 15px 0 rgba(116, 79, 168, 0.75);
+}
+
+.hero-img {
+  width: 600px;
+  height: 600px;
+  filter: drop-shadow(0px 4px 8px rgba(122, 76, 168, 0.4));
+  border-radius: 8px;
+}
+
+.ft-img img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  filter: drop-shadow(0px 4px 8px rgba(122, 76, 168, 0.4));
+  border-radius: 8px;
+}
+
+.ft-img {
+  filter: drop-shadow(0px 4px 8px rgba(122, 76, 168, 0.4));
+  border-radius: 50%;
+}
