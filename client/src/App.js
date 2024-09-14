@@ -5,7 +5,7 @@ import Login from './pages/AuthPages/Login';
 import HomePage from './pages/homePage/HomePage';
 import Ai from './pages/ai/page';
 import Register from './pages/AuthPages/Register';
-
+import "./index.css";
 import './App.css';
 
 
