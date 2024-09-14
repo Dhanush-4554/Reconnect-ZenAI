@@ -69,4 +69,4 @@ def process_video_and_extract_text(video_file_path):
     # Print results
     print(f"Audio  Emotions: {emotions}")
 
-    return output_audio_path, transcript
+    return output_audio_path, transcript , emotions
