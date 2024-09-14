@@ -3,6 +3,7 @@
     display: flex;
     background: radial-gradient(circle at center, #1a1a2e, #001346, #001c3d);
     color: #ffffff;
+    font-family: "SF Pro Text", "SF Pro Icons", system, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", "Ubuntu", "Cantarell", "Fira Sans", sans-serif;
 }
 
 
@@ -54,9 +55,32 @@
 .chat-panel {
     width: 30%;
     background: #111b21;
-    min-height: 100vh;
+    min-height: 90vh;
     border-right: 0.01px solid rgb(50, 50, 50);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
 }
+
+.channel {
+    padding: 15px 10px;
+    font-size: 16px;
+    color: #b0b0b0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    margin: 3px;
+}
+
+.channel:hover {
+    background-color: #202c33;
+}
+
+.active {
+    background-color: #202c33;
+    color: #ffffff;
+}
+
 
 /* Chat area  */
 .chat-area {
@@ -73,7 +97,10 @@
     align-items: center;
     padding-left: 10px;
     color: rgb(176, 176, 176);
+    height: 9vh;
+    background: #202c33;
 }
+
 
 .messages {
     background: #111b21;
@@ -81,14 +108,54 @@
     overflow-y: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    padding: 10px;
 }
+
+.messages::-webkit-scrollbar {
+    display: none;
+}
+
+.message {
+    max-width: 60%;
+    width: max-content;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+
+.message.current-user {
+    background-color: #004654;
+    color: white;
+    margin: 3px 0;
+    margin-left: auto;
+    text-align: right;
+}
+
+
+.message.other-user {
+    background-color: #202c33;
+    color: white;
+    margin: 15px;
+    margin-left: 5px;
+    margin-right: auto;
+    text-align: left;
+}
+
+.user-name.current {
+    color: #06cf9c;
+}
+
+.user-name.other {
+    color: #53bdeb;
+}
+
 
 
 .text-area,
 .channel-details {
     height: 9vh;
-    /* border: 2px solid red; */
-
     background: #202c33;
 }
 
@@ -118,4 +185,9 @@
 
 .send-button {
     cursor: pointer;
+}
+
+.messages {
+    padding: 20px;
+    box-sizing: border-box;
 }
