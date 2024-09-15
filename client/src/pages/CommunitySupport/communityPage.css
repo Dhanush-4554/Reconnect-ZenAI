@@ -1,4 +1,4 @@
-/* community page */
+/* --- Community Page --- */
 .community-main-page {
     display: flex;
     background: radial-gradient(circle at center, #1a1a2e, #001346, #001c3d);
@@ -6,8 +6,7 @@
     font-family: "SF Pro Text", "SF Pro Icons", system, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", "Ubuntu", "Cantarell", "Fira Sans", sans-serif;
 }
 
-
-/* SideBar */
+/* --- Sidebar --- */
 .side-bar {
     width: 5%;
     min-height: 100vh;
@@ -18,6 +17,7 @@
     justify-content: space-between;
 }
 
+/* Sidebar Logo */
 .chat-logo {
     margin-top: 10px;
     cursor: pointer;
@@ -34,6 +34,7 @@
     cursor: pointer;
 }
 
+/* Channel Logos Section */
 .channels-logo {
     display: flex;
     flex-direction: column;
@@ -51,7 +52,7 @@
     background-color: grey;
 }
 
-/* chat panel */
+/* --- Chat Panel --- */
 .chat-panel {
     width: 30%;
     background: #111b21;
@@ -60,6 +61,11 @@
     display: flex;
     flex-direction: column;
     padding: 10px;
+}
+
+/* User List Item */
+.dm {
+    list-style: none;
 }
 
 .channel {
@@ -81,8 +87,7 @@
     color: #ffffff;
 }
 
-
-/* Chat area  */
+/* --- Chat Area --- */
 .chat-area {
     width: 65%;
     min-height: 100vh;
@@ -92,6 +97,7 @@
     background: black;
 }
 
+/* Chat Header */
 .channel-details {
     display: flex;
     align-items: center;
@@ -101,20 +107,57 @@
     background: #202c33;
 }
 
+/* --- Search Box --- */
+.search-input {
+    padding: 8px;
+    margin: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #ccc;
+}
 
+/* Dropdown for User Suggestions */
+.suggestions-dropdown {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #ccc;
+}
+
+.suggestions-dropdown .channel {
+    padding: 8px;
+    cursor: pointer;
+    color: black;
+    background-color: #ccc;
+}
+
+.suggestions-dropdown .channel:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- Messages Section --- */
 .messages {
     background: #111b21;
     height: 82vh;
     overflow-y: scroll;
     scrollbar-width: none;
+    /* For Firefox */
     -ms-overflow-style: none;
+    /* For Internet Explorer and Edge */
     padding: 10px;
 }
 
+/* Hide Scrollbar for Webkit Browsers (Chrome, Safari, etc.) */
 .messages::-webkit-scrollbar {
     display: none;
 }
 
+/* Individual Message Styles */
 .message {
     max-width: 60%;
     width: max-content;
@@ -124,7 +167,6 @@
     word-wrap: break-word;
 }
 
-
 .message.current-user {
     background-color: #004654;
     color: white;
@@ -132,7 +174,6 @@
     margin-left: auto;
     text-align: right;
 }
-
 
 .message.other-user {
     background-color: #202c33;
@@ -143,6 +184,7 @@
     text-align: left;
 }
 
+/* Message Sender Name Styling */
 .user-name.current {
     color: #06cf9c;
 }
@@ -151,8 +193,7 @@
     color: #53bdeb;
 }
 
-
-
+/* --- Input and Text Area --- */
 .text-area,
 .channel-details {
     height: 9vh;
@@ -182,12 +223,26 @@
     outline: none;
 }
 
+/* Timestamp Styling */
+.message-time {
+    font-size: 9px;
+    margin-right: -5px;
+    text-align: right;
+    color: rgb(174, 174, 174);
+}
 
+/* Send Button Styling */
 .send-button {
     cursor: pointer;
 }
 
+/* Adjust padding for messages container */
 .messages {
     padding: 20px;
     box-sizing: border-box;
+}
+
+/* Panel Header Styling */
+.panel-header {
+    background: none;
 }

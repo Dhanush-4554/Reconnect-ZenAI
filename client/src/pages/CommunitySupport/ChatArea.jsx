@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './communityPage.css';
@@ -7,19 +7,26 @@ const ChatArea = ({ socket, activeChannel }) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
+    const messagesEndRef = useRef(null);
 
     const username = localStorage.getItem('username');
 
     useEffect(() => {
-
         if (!username) {
             console.warn('No username found. Redirecting to login.');
             navigate('/login');
         }
+
         const fetchMessages = async () => {
             try {
-                const response = await axios.get(`/api/messages/${activeChannel}`);
-                setMessages(response.data);
+                let response;
+                if (activeChannel.includes('@')) {
+                    response = await axios.get(`/api/direct-message/${username}/${activeChannel}`);
+                } else {
+                    response = await axios.get(`/api/messages/${activeChannel}`);
+                }
+
+                setMessages(response.data || []);
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
@@ -38,13 +45,33 @@ const ChatArea = ({ socket, activeChannel }) => {
         };
     }, [socket, activeChannel, username, navigate]);
 
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
     const sendMessage = () => {
         if (message.trim()) {
-            socket.emit('message', { username, message, channel: activeChannel });
+            const currentTime = new Date();
+            const formattedTime = currentTime.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'Asia/Kolkata',
+            });
+
+            socket.emit('message', {
+                username,
+                message,
+                channel: activeChannel,
+                time: formattedTime
+            });
             setMessage('');
         }
     };
-
 
     return (
         <div className="chat-area">
@@ -57,10 +84,16 @@ const ChatArea = ({ socket, activeChannel }) => {
                         key={index}
                         className={`message ${msg.username === username ? 'current-user' : 'other-user'}`}
                     >
-                        <div><strong className={`user-name ${msg.username === username ? 'current' : 'other'}`}>{msg.username}</strong></div>
+                        <div>
+                            <strong className={`user-name ${msg.username === username ? 'current' : 'other'}`}>
+                                {msg.username}
+                            </strong>
+                        </div>
                         <div>{msg.message}</div>
+                        <span className="message-time">{msg.time}</span>
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
 
             <div className="text-area">
