@@ -7,6 +7,7 @@ import Ai from './pages/ai/page';
 import Register from './pages/AuthPages/Register';
 
 import './App.css';
+import DMPage from './pages/CommunitySupport/DM/DMPage';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Route exact path="/login" element={<Login/>} />
       <Route exact path="/ai" element={<Ai />} />
       <Route exact path="/community" element={<CommunitySupport />} />
+      <Route exact path="/community/dm" element={<DMPage />} />
     </Routes>
   );
 }

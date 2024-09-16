@@ -2,17 +2,18 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import io from 'socket.io-client';
-import SideBar from './SideBar';
-import ChatPanel from './ChatPanel';
-import ChatArea from './ChatArea';
-import './communityPage.css';
+import SideBar from '../SideBar';
+
+import '../communityPage.css';
+import DMPanel from './DMPanel';
+import DMChatArea from './DMChatArea';
 
 const socket = io.connect('http://localhost:5000');
 
-const CommunitySupport = () => {
+const DMPage = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [activeChannel, setActiveChannel] = useState('General Support');
     const navigate = useNavigate();
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const handleLogout = useCallback(() => {
         localStorage.removeItem('authToken');
@@ -38,21 +39,25 @@ const CommunitySupport = () => {
         }
     }, [navigate, handleLogout]);
 
-    const handleChannelChange = (channel) => {
-        setActiveChannel(channel);
-    };
+
 
     if (!isLoggedIn) {
         return <p>Loading...</p>;
     }
 
+
+
+    const handleUserSelect = (user) => {
+        setSelectedUser(user);
+    };
+
     return (
         <div className="community-main-page">
             <SideBar />
-            <ChatPanel onChannelChange={handleChannelChange} activeChannel={activeChannel} />
-            <ChatArea socket={socket} activeChannel={activeChannel} />
+            <DMPanel onUserSelect={handleUserSelect} activeUser={selectedUser} />
+            <DMChatArea selectedUser={selectedUser} />
         </div>
     );
 };
 
-export default CommunitySupport;
+export default DMPage;

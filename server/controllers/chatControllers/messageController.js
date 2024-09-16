@@ -1,10 +1,16 @@
 const Message = require('../../models/messageModel');
+const moment = require('moment-timezone');
 
 const getMessagesByChannel = async (req, res) => {
     const { channel } = req.params;
     try {
         const messages = await Message.find({ channel }).sort({ timestamp: 1 });
-        res.status(200).json(messages);
+        const formattedMessages = messages.map(msg => ({
+            ...msg._doc, 
+            time: moment(msg.timestamp).tz('Asia/Kolkata').format('hh:mm A'), 
+        }));
+
+        res.status(200).json(formattedMessages);
     } catch (error) {
         res.status(500).json({ error: 'Failed to retrieve messages' });
     }
