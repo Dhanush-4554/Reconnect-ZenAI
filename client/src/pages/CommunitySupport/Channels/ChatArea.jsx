@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './communityPage.css';
+import '../communityPage.css';
 
 const ChatArea = ({ socket, activeChannel }) => {
     const [message, setMessage] = useState('');
