@@ -8,8 +8,9 @@ const Ai = () => {
   const [videoEmotion, setVideoEmotion] = useState(null);
   const [response, setResponse] = useState('');
   const [error, setError] = useState(null);
-  const [conversationHistory, setConversationHistory] = useState([]);
-  
+  const [conversationHistory, setConversationHistory] = useState('');
+
+
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const speechSynthesisRef = useRef(window.speechSynthesis);
@@ -35,49 +36,36 @@ const Ai = () => {
     }
   };
 
-  // Helper to update conversation history
-  const updateConversationHistory = (data, aiResponse = '') => {
-    const newHistoryEntry = {
-      role: 'user', 
-      content: data.transcript,
-      audio_emotions: data.audio_emotions,
-      video_emotion: data.dominant_video_emotion,
-    };
-  
-    setConversationHistory((prevHistory) => [
-      ...prevHistory,
-      newHistoryEntry,
-      { role: 'ai', content: aiResponse }, // Add AI response to history
-    ]);
-  };
-
-  // Creates the prompt to send to AI with user history
-  const createPrompt = (inputMessage, conversationHistory) => {
-    const historyText = conversationHistory
-      .map(entry => (entry.role === 'user' 
-        ? `User: "${entry.content}"` 
-        : `AI: "${entry.content}"`))
-      .join('\n');
-  
-    return `
-      You are a caring and empathetic AI assistant. Respond to the user's input by considering their emotional state and previous interactions.
-  
-      Previous context:
-      ${historyText}
-      
-      User's current input: "${inputMessage}"
-  
-      Keep your response concise and empathetic, around 2-3 sentences.
-    `;
-  };
-  
-
-  // Generates AI response using the prompt with history
-  const generateAiResponse = async (inputMessage) => {
+  // Generates AI response using the prompt with only current input
+  // Generates AI response using the prompt with conversation history
+  const generateAiResponse = async (inputMessage,audio_emotions,videoEmotion) => {
     try {
-      const prompt = createPrompt(inputMessage, conversationHistory);
-      console.log(prompt);
-  
+
+      const highestAudioEmotion = audio_emotions.reduce((maxEmotion, currentEmotion) => {
+        return currentEmotion.score > maxEmotion.score ? currentEmotion : maxEmotion;
+      }, audio_emotions[0]);
+      
+      // Format the highest audio emotion
+      const formattedHighestAudioEmotion = `${highestAudioEmotion.label}: ${highestAudioEmotion.score.toFixed(2)}`;
+
+
+      const prompt = `
+      You are a caring and empathetic AI assistant. Respond based on the following audio emotions, and video emotions extracted:
+
+      Probable Audio emotion:
+      [${formattedHighestAudioEmotion}]
+
+      Probable Video emotion:
+      [${videoEmotion}]
+
+      Text from video analysis (possibly seeking help for mental peace):
+      "${inputMessage}"
+
+      AI:
+    `;
+
+    console.log(prompt);
+    
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: {
@@ -88,20 +76,20 @@ const Ai = () => {
           prompt: prompt,
         }),
       });
-  
+
       if (response.ok) {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
         let result = '';
-  
+
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-  
+
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split('\n');
-  
+
           for (let i = 0; i < lines.length - 1; i++) {
             const line = lines[i].trim();
             if (line) {
@@ -117,10 +105,10 @@ const Ai = () => {
               }
             }
           }
-  
+
           buffer = lines[lines.length - 1];
         }
-  
+
         if (buffer) {
           try {
             const parsed = JSON.parse(buffer);
@@ -133,9 +121,8 @@ const Ai = () => {
             console.error('Error parsing final JSON', err);
           }
         }
-  
-        // Update the conversation history with both user input and AI response
-        updateConversationHistory({ transcript: inputMessage }, result);
+
+
       } else {
         setError('Failed to fetch response from AI');
       }
@@ -143,41 +130,52 @@ const Ai = () => {
       setError('An error occurred while fetching the response.');
     }
   };
-  
 
-  // Add to speech buffer and speak
-  const addToSpeechBuffer = (text) => {
-    speechBufferRef.current += text;
-    if (!isSpeakingRef.current) {
-      speakFromBuffer();
-    }
-  };
+  // Add text to the speech buffer and check if there are enough sentences to speak
+const addToSpeechBuffer = (text) => {
+  speechBufferRef.current += text;
 
-  // Speak from buffer
-  const speakFromBuffer = () => {
-    if (speechBufferRef.current.length > 0) {
-      isSpeakingRef.current = true;
-      
-      const sentences = speechBufferRef.current.match(/[^.!?]+[.!?]+|\S+/g) || [];
-      
-      if (sentences.length > 0) {
-        const sentenceToSpeak = sentences[0].trim();
-        speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim();
+  // Don't start speaking unless we have at least one full sentence or meaningful chunk
+  if (!isSpeakingRef.current && hasCompleteSentence(speechBufferRef.current)) {
+    speakFromBuffer();
+  }
+};
 
-        utteranceRef.current = new SpeechSynthesisUtterance(sentenceToSpeak);
-        utteranceRef.current.rate = 1.3;
-        utteranceRef.current.onend = () => {
-          isSpeakingRef.current = false;
-          speakFromBuffer();
-        };
-        speechSynthesisRef.current.speak(utteranceRef.current);
-      } else {
-        isSpeakingRef.current = false;
-      }
-    } else {
+// Helper function to check if the buffer has a complete sentence to speak
+const hasCompleteSentence = (text) => {
+  const sentenceRegex = /[.!?]+/g;  // A complete sentence ends with punctuation
+  return sentenceRegex.test(text);
+};
+
+// Speak from buffer when there is enough content
+const speakFromBuffer = () => {
+  if (speechBufferRef.current.length > 0 && hasCompleteSentence(speechBufferRef.current)) {
+    isSpeakingRef.current = true;
+
+    // Extract the first complete sentence from the buffer
+    const sentenceToSpeak = extractFirstCompleteSentence(speechBufferRef.current);
+    speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim();
+
+    utteranceRef.current = new SpeechSynthesisUtterance(sentenceToSpeak);
+    utteranceRef.current.rate = 1.3;
+
+    utteranceRef.current.onend = () => {
       isSpeakingRef.current = false;
-    }
-  };
+      speakFromBuffer(); // Continue speaking the remaining text if any
+    };
+
+    speechSynthesisRef.current.speak(utteranceRef.current);
+  } else {
+    isSpeakingRef.current = false; // Stop if no complete sentence is ready to speak
+  }
+};
+
+// Helper function to extract the first complete sentence from the buffer
+const extractFirstCompleteSentence = (text) => {
+  const sentenceRegex = /[^.!?]+[.!?]+/g;
+  const match = text.match(sentenceRegex);
+  return match ? match[0].trim() : text.trim();
+};
 
   const stopSpeaking = () => {
     if (speechSynthesisRef.current.speaking) {
@@ -192,7 +190,7 @@ const Ai = () => {
       stopSpeaking();
     };
   }, []);
-  
+
   // Sends recorded data to server
   const sendToServer = async (blob) => {
     const formData = new FormData();
@@ -211,8 +209,7 @@ const Ai = () => {
         setAudioEmotions(data.audio_emotions);
         setVideoEmotion(data.dominant_video_emotion);
 
-        updateConversationHistory(data);
-        generateAiResponse(data.transcript);
+        generateAiResponse(data.transcript,data.audio_emotions,data.dominant_video_emotion);
       } else {
         setMessage('Failed to upload file');
       }
@@ -316,11 +313,7 @@ const Ai = () => {
             <p>{response}</p>
           </div>
         )}
-        {error && (
-          <div className="error-section">
-            <p className="error-message">{error}</p>
-          </div>
-        )}
+        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );
