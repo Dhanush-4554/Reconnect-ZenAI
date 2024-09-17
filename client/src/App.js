@@ -5,9 +5,9 @@ import Login from './pages/AuthPages/Login';
 import HomePage from './pages/homePage/HomePage';
 import Ai from './pages/ai/page';
 import Register from './pages/AuthPages/Register';
+import DMPage from './pages/CommunitySupport/DM/DMPage';
 
 import './App.css';
-import DMPage from './pages/CommunitySupport/DM/DMPage';
 
 
 function App() {

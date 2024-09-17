@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 import hero from "./hero3.png";
 import voice from "./voice.png";
@@ -6,14 +7,23 @@ import video from "./video.png";
 import ai from "./ai.png";
 import mental from "./mental.png";
 import happy from "./happy.png";
+import Footer from "../../components/layout/Footer.jsx";
 function LandingPage() {
+  const navigate = useNavigate();
   return (
     <div className="LandingPage">
       <nav className="nav-bar">
         <div className="logo">Logo.</div>
         <div className="nav-items">
-          <button className="poppins-medium">Register</button>
-          <button className="poppins-medium">Login</button>
+          <button
+            className="poppins-medium"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </button>
+          <button className="poppins-medium" onClick={() => navigate("/login")}>
+            Login
+          </button>
         </div>
       </nav>
       <div className="land">
@@ -24,9 +34,7 @@ function LandingPage() {
               The Personal AI Counsellor offers tailored emotional support using
               advanced AI technology. It provides real-time insights and
               personalized advice, helping users manage stress, enhance
-              well-being, and make informed decisions. Experience compassionate
-              and intelligent assistance designed to improve mental health and
-              life satisfaction.
+              well-being, and make informed decisions.
             </p>
           </div>
           <div className="land-start">
@@ -104,6 +112,7 @@ function LandingPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 import SideBar from './SideBar';
-import ChatPanel from './ChatPanel';
-import ChatArea from './ChatArea';
+import ChatPanel from './Channels/ChatPanel';
+import ChatArea from './Channels/ChatArea';
 import './communityPage.css';
 
 const socket = io.connect('http://localhost:5000');
