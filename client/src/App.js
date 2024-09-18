@@ -3,7 +3,6 @@ import LandingPage from './pages/landing/LandingPage';
 import CommunitySupport from './pages/CommunitySupport/CommunitySupport';
 import Login from './pages/AuthPages/Login';
 import HomePage from './pages/homePage/HomePage';
-import Ai from './pages/ai/page';
 import Register from './pages/AuthPages/Register';
 import DMPage from './pages/CommunitySupport/DM/DMPage';
 import FaceEmotionDetection from './pages/ai/assitant';
