@@ -13,21 +13,23 @@ const LLaMAChat = () => {
 
   const generateAiResponse = async (inputMessage) => {
     try {
+      setLoading(true);
+      setError(null);
+
+      // Construct the prompt from conversation history
       const historyPrompt = conversationHistory
         .map(entry => `${entry.role}: ${entry.content}`)
         .join('\n');
       
-      // Append the new input message to the conversation history
-      const prompt = `${historyPrompt}\nuser: ${inputMessage}\n`;
+      const prompt = `${historyPrompt}\nuser: ${inputMessage}`;
 
-      const response = await fetch('http://localhost:11434/api/generate', {
+      const response = await fetch('http://localhost:5000/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama3.1:latest',
-          prompt: prompt,
+          message: inputMessage, // Only send the new message to the server
         }),
       });
 
@@ -37,6 +39,7 @@ const LLaMAChat = () => {
         let buffer = '';
         let result = '';
 
+        // Stream processing
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -44,7 +47,7 @@ const LLaMAChat = () => {
           // Decode the value and append to buffer
           buffer += decoder.decode(value, { stream: true });
 
-          // Split buffer into lines (assuming each message ends with a newline)
+          // Split buffer into lines
           const lines = buffer.split('\n');
 
           // Process each line except the last one (which might be incomplete)
@@ -53,9 +56,13 @@ const LLaMAChat = () => {
             if (line) {
               try {
                 const parsed = JSON.parse(line);
-                if (parsed.response) {
-                  result += parsed.response;
-                  setResponse(result);
+                if (parsed.chunk === '[DONE]') {
+                  // Stop processing when "[DONE]" is received
+                  return;
+                }
+                if (parsed.chunk) {
+                  result += parsed.chunk; // Append the chunk to the result
+                  setResponse(result); // Update response state with partial result
                 }
               } catch (err) {
                 console.error('Error parsing JSON', err);
@@ -65,19 +72,6 @@ const LLaMAChat = () => {
 
           // Keep the last line in the buffer if it's incomplete
           buffer = lines[lines.length - 1];
-        }
-
-        // Final buffer update (in case there's any remaining data)
-        if (buffer) {
-          try {
-            const parsed = JSON.parse(buffer);
-            if (parsed.response) {
-              result += parsed.response;
-              setResponse(result);
-            }
-          } catch (err) {
-            console.error('Error parsing final JSON', err);
-          }
         }
 
         // Update conversation history with the AI's response
@@ -98,8 +92,6 @@ const LLaMAChat = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    setError(null);
     setResponse(''); // Clear previous response
     await generateAiResponse(input);
     setInput(''); // Clear input field after submission

@@ -7,7 +7,6 @@ const FaceEmotionDetection = () => {
   const [transcript, setTranscript] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef(null);
-  const [aiResponse, setAiResponse] = useState("");
   const speechBufferRef = useRef('');
   const isSpeakingRef = useRef(false);
   const utteranceRef = useRef(null);
@@ -97,37 +96,24 @@ const FaceEmotionDetection = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       setTimeout(()=>{
-        generateAiResponse(transcript,emotion);
-    },500)
+        generateAiResponse(transcript, emotion);
+    }, 500);
       setIsRecording(false);
-      
     }
   };
 
   // AI Response Generation and TTS Integration
   const generateAiResponse = async (inputMessage, videoEmotion) => {
     try {
+      console.log(inputMessage);
 
-        console.log(inputMessage);
-        
-
-      const prompt = `
-        
-       
-        "${inputMessage}"
-
-      `;
-
-      //console.log(prompt);
-
-      const response = await fetch('http://localhost:11434/api/generate', {
+      const response = await fetch('http://localhost:5000/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama3.1:latest',
-          prompt: prompt,
+          message: inputMessage, // Only send the new message to the server
         }),
       });
 
@@ -137,46 +123,41 @@ const FaceEmotionDetection = () => {
         let buffer = '';
         let result = '';
 
+        // Stream processing
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
+          // Decode the value and append to buffer
           buffer += decoder.decode(value, { stream: true });
+
+          // Split buffer into lines
           const lines = buffer.split('\n');
 
+          // Process each line except the last one (which might be incomplete)
           for (let i = 0; i < lines.length - 1; i++) {
             const line = lines[i].trim();
             if (line) {
               try {
                 const parsed = JSON.parse(line);
-                if (parsed.response) {
-                  result += parsed.response;
-                  setResponse(result);
-                  addToSpeechBuffer(parsed.response);
+                if (parsed.chunk === '[DONE]') {
+                  // Stop processing when "[DONE]" is received
+                  return;
+                }
+                if (parsed.chunk) {
+                  result += parsed.chunk; // Append the chunk to the result
+                  console.log(result);
+                  addToSpeechBuffer(parsed.chunk); // Add the new text to speech buffer
+                  setResponse(result); // Update response state with partial result
                 }
               } catch (err) {
                 console.error('Error parsing JSON', err);
               }
             }
           }
-
+          // Keep the last line in the buffer if it's incomplete
           buffer = lines[lines.length - 1];
         }
-
-        if (buffer) {
-          try {
-            const parsed = JSON.parse(buffer);
-            if (parsed.response) {
-              result += parsed.response;
-              setResponse(result);
-              addToSpeechBuffer(parsed.response);
-            }
-          } catch (err) {
-            console.error('Error parsing final JSON', err);
-          }
-        }
-
-
       } else {
         setError('Failed to fetch response from AI');
       }
@@ -186,43 +167,47 @@ const FaceEmotionDetection = () => {
   };
 
   const addToSpeechBuffer = (text) => {
-    speechBufferRef.current += text;
+    speechBufferRef.current += text; // Append new text to the buffer
 
+    // Check if there's a complete sentence and no speech is ongoing
     if (!isSpeakingRef.current && hasCompleteSentence(speechBufferRef.current)) {
-      speakFromBuffer();
+      speakFromBuffer(); // Start speaking if the buffer has a complete sentence
     }
   };
 
   const hasCompleteSentence = (text) => {
     const sentenceRegex = /[.!?]+/g;
-    return sentenceRegex.test(text);
+    return sentenceRegex.test(text); // Check for complete sentences (ending with . ! or ?)
   };
 
   const speakFromBuffer = () => {
-    if (speechBufferRef.current.length > 0 && hasCompleteSentence(speechBufferRef.current)) {
-      isSpeakingRef.current = true;
+    if (isSpeakingRef.current || speechBufferRef.current.length === 0) {
+      return; // Don't speak if already speaking or buffer is empty
+    }
 
-      const sentenceToSpeak = extractFirstCompleteSentence(speechBufferRef.current);
-      speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim();
+    // Extract the first complete sentence
+    const sentenceToSpeak = extractFirstCompleteSentence(speechBufferRef.current);
+
+    if (sentenceToSpeak) {
+      isSpeakingRef.current = true;
+      speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim(); // Remove the spoken sentence from buffer
 
       utteranceRef.current = new SpeechSynthesisUtterance(sentenceToSpeak);
       utteranceRef.current.rate = 1.3;
 
       utteranceRef.current.onend = () => {
         isSpeakingRef.current = false;
-        speakFromBuffer();
+        speakFromBuffer(); // Continue with the next sentence after finishing the current one
       };
 
       speechSynthesisRef.current.speak(utteranceRef.current);
-    } else {
-      isSpeakingRef.current = false;
     }
   };
 
   const extractFirstCompleteSentence = (text) => {
     const sentenceRegex = /[^.!?]+[.!?]+/g;
-    const match = text.match(sentenceRegex);
-    return match ? match[0].trim() : text.trim();
+    const match = text.match(sentenceRegex); // Extract the first complete sentence
+    return match ? match[0].trim() : ''; // Ensure we return the first complete sentence
   };
 
   const stopSpeaking = () => {
@@ -230,7 +215,7 @@ const FaceEmotionDetection = () => {
       speechSynthesisRef.current.cancel();
     }
     isSpeakingRef.current = false;
-    speechBufferRef.current = '';
+    speechBufferRef.current = ''; // Clear the speech buffer
   };
 
   useEffect(() => {

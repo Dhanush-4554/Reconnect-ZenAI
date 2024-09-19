@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 from langchain_community.llms import Ollama
+from flask_cors import CORS
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 
-
 app = Flask(__name__)
+CORS(app)
 
 # Set up the LLM with LangChain (Ollama in this case)
 llm = Ollama(model="llama3.1:latest")
@@ -37,9 +38,16 @@ def chat():
     # Use the chain to get a response based on the current chat history
     response_message = conversation.invoke(user_message)
     
-    print(response_message)
+    # Ensure the response is correctly extracted, if it's a dictionary
+    if isinstance(response_message, dict) and 'response' in response_message:
+        extracted_response = response_message['response']
+    else:
+        extracted_response = response_message  # Or handle other formats
+
+    print(extracted_response)
     
-    return jsonify({'response': response_message})
+    return jsonify({'response': extracted_response})
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
