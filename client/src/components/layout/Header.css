@@ -50,7 +50,7 @@
 
 .nav-items button:hover {
     background-position: 0 0;
-    background-image: linear-gradient(270deg, rgb(177, 230, 107), #ffffff, rgb(107, 107, 230));
+    background-image: linear-gradient(270deg, rgb(107, 107, 230), #ffffff, rgb(107, 107, 230));
     background-size: 200% 100%;
     background-position: 100% 0;
     transition: background-position 2s ease;
