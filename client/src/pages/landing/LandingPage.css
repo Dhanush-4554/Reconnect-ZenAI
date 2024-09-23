@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
 .ubuntu-light {
   font-family: "Ubuntu", sans-serif;
   font-weight: 300;
@@ -104,33 +105,6 @@
 
 .nav-bar .logo {
   font-size: x-large;
-}
-
-.nav-items {
-  width: 25%;
-  margin: 5px;
-}
-
-.nav-items button {
-  width: 120px;
-  height: 50px;
-  border-radius: 25px;
-  margin: 5px;
-  cursor: pointer;
-  border: none;
-  font-size: medium;
-  font-weight: bold;
-  background-color: #ffffff;
-  color: #333333;
-  transition: background-color 0.3s ease-out, color 0.3s ease-out,
-    transform 0.3s ease-out, border 0.3s ease-out;
-}
-
-.nav-items button:hover {
-  border: 2px solid;
-  color: #141e30;
-  transform: scale(1.1);
-  filter: drop-shadow(0px 4px 8px rgba(122, 76, 168, 0.4));
 }
 
 .land {
@@ -243,13 +217,11 @@ hr {
 }
 
 .bn632-hover.bn20 {
-  background-image: linear-gradient(
-    to right,
-    #667eea,
-    #764ba2,
-    #6b8dd6,
-    #8e37d7
-  );
+  background-image: linear-gradient(to right,
+      #667eea,
+      #764ba2,
+      #6b8dd6,
+      #8e37d7);
   box-shadow: 0 4px 15px 0 rgba(116, 79, 168, 0.75);
 }
 

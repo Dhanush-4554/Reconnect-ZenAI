@@ -36,7 +36,7 @@ const Login = () => {
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("username", username);
         resetInactivityTimer();
-        navigate("/community");
+        navigate("/home");
       }
     } catch (error) {
       setErrorMessage("Invalid username or password");

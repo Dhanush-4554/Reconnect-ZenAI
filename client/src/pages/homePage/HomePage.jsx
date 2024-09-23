@@ -1,76 +1,48 @@
-import React, { useState, useEffect } from "react";
-import bg from "./homePage-bg.jpeg";
-import "./homePage.css"; 
-
+import React from 'react'
+import './homePage.css'
+import Header from '../../components/layout/Header'
+import { useNavigate } from 'react-router-dom'
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
-    <div className="homepage-container">
-      <MainSection />
-      <Footer />
+    <div className='home-page'>
+      <div className="home-nav-bar">
+        <Header />
+      </div>
+      <div className="home-content">
+        <div className="home-content-left">
+          <div className="head-line">
+            Reconnect: Rehabilitaion Online
+          </div>
+
+          <div className="explain-home">
+            The Personal AI Counsellor offers tailored emotional support using advanced AI technology. It provides real-time insights and personalized advice, helping users manage stress, enhance well-being, and make informed decisions.
+          </div>
+          <button
+            className="home-zenai"
+            onClick={() => navigate("/assist")}
+          >
+            Try ZenAI
+          </button>
+        </div>
+        <div className="home-content-right">
+
+        </div>
+
+      </div>
+      <div className="home-content-2">
+        <div className="home-content-2-cards">
+          <img src="" alt="" />
+        </div>
+        <div className="home-content-2-cards">
+          <img src="" alt="" />
+        </div>
+        <div className="home-content-2-cards">
+          <img src="" alt="" />
+        </div>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [bgOpacity, setBgOpacity] = useState(0);
-
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const newBgOpacity = Math.min(scrollTop / 30, 0.8);
-      setBgOpacity(newBgOpacity);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  return (
-    <div
-      className="navbar"
-      style={{ backgroundColor: `rgba(31, 41, 55, ${bgOpacity})` }}
-    >
-      <h1 className="logo">Reconnect</h1>
-
-      <button onClick={toggleNavbar} className="menu-button">
-        menu
-      </button>
-
-      <ul className={`nav-links ${isOpen ? "nav-open" : ""}`}>
-        <li className="nav-item">Zen-AI</li>
-        <li className="nav-item">Community</li>
-        <li className="nav-item">Blogs</li>
-      </ul>
-    </div>
-  );
-};
-
-const MainSection = () => (
-  <section className="main-section">
-    <img src={bg} alt="Background" className="background-image" />
-    <Navbar />
-    <div className="overlay"></div>
-    <div className="main-text">
-      <h2 className="title">Real-time Emotion Detection</h2>
-      <p className="subtitle">
-        AI-driven assistance to detect and display real-time emotions based on
-        facial expressions.
-      </p>
-    </div>
-  </section>
-);
-
-const Footer = () => (
-  <footer className="footer">
-    <p className="footer-text">Idre nemdiyagi irbeku</p>
-  </footer>
-);
-
-export default HomePage;
+export default HomePage
