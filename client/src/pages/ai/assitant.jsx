@@ -105,12 +105,77 @@ const FaceEmotionDetection = () => {
   };
 
   // AI Response Generation and TTS Integration
-  const generateAiResponse = async (inputMessage, videoEmotion) => {
+  // const generateAiResponse = async (inputMessage, videoEmotion) => {
 
+  //   try {
+  //     setIsLoading(true);
+  //     console.log(inputMessage);
+
+  //     const response = await fetch('http://localhost:5000/chat', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         message: inputMessage, // Only send the new message to the server
+  //       }),
+  //     });
+
+  //     if (response.ok) {
+  //       const reader = response.body.getReader();
+  //       const decoder = new TextDecoder();
+  //       let buffer = '';
+  //       let result = '';
+
+  //       // Stream processing
+  //       while (true) {
+  //         const { done, value } = await reader.read();
+  //         if (done) break;
+
+  //         // Decode the value and append to buffer
+  //         buffer += decoder.decode(value, { stream: true });
+
+  //         // Split buffer into lines
+  //         const lines = buffer.split('\n');
+
+  //         // Process each line except the last one (which might be incomplete)
+  //         for (let i = 0; i < lines.length - 1; i++) {
+  //           const line = lines[i].trim();
+  //           if (line) {
+  //             try {
+  //               const parsed = JSON.parse(line);
+  //               if (parsed.chunk === '[DONE]') {
+  //                 // Stop processing when "[DONE]" is received
+  //                 return;
+  //               }
+  //               if (parsed.chunk) {
+  //                 result += parsed.chunk; // Append the chunk to the result
+  //                 console.log(result);
+  //                 addToSpeechBuffer(parsed.chunk); // Add the new text to speech buffer
+  //                 setResponse(result); // Update response state with partial result
+  //               }
+  //             } catch (err) {
+  //               console.error('Error parsing JSON', err);
+  //             }
+  //           }
+  //         }
+  //         // Keep the last line in the buffer if it's incomplete
+  //         buffer = lines[lines.length - 1];
+  //         setIsLoading(false)
+  //       }
+  //     } else {
+  //       setError('Failed to fetch response from AI');
+  //     }
+  //   } catch (error) {
+  //     setError('An error occurred while fetching the response.');
+  //   }
+  // };
+
+  const generateAiResponse = async (inputMessage, videoEmotion) => {
     try {
       setIsLoading(true);
       console.log(inputMessage);
-
+  
       const response = await fetch('http://localhost:5000/chat', {
         method: 'POST',
         headers: {
@@ -120,54 +185,20 @@ const FaceEmotionDetection = () => {
           message: inputMessage, // Only send the new message to the server
         }),
       });
-
+  
       if (response.ok) {
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-        let result = '';
-
-        // Stream processing
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          // Decode the value and append to buffer
-          buffer += decoder.decode(value, { stream: true });
-
-          // Split buffer into lines
-          const lines = buffer.split('\n');
-
-          // Process each line except the last one (which might be incomplete)
-          for (let i = 0; i < lines.length - 1; i++) {
-            const line = lines[i].trim();
-            if (line) {
-              try {
-                const parsed = JSON.parse(line);
-                if (parsed.chunk === '[DONE]') {
-                  // Stop processing when "[DONE]" is received
-                  return;
-                }
-                if (parsed.chunk) {
-                  result += parsed.chunk; // Append the chunk to the result
-                  console.log(result);
-                  addToSpeechBuffer(parsed.chunk); // Add the new text to speech buffer
-                  setResponse(result); // Update response state with partial result
-                }
-              } catch (err) {
-                console.error('Error parsing JSON', err);
-              }
-            }
-          }
-          // Keep the last line in the buffer if it's incomplete
-          buffer = lines[lines.length - 1];
-          setIsLoading(false)
-        }
+        const data = await response.json();
+        const result = data.response; // Access the full AI response from the response body
+  
+        setResponse(result); // Update the state with the full response
+        addToSpeechBuffer(result); // Add the full response to the speech buffer
       } else {
         setError('Failed to fetch response from AI');
       }
     } catch (error) {
       setError('An error occurred while fetching the response.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
