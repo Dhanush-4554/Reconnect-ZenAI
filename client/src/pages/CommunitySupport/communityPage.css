@@ -246,3 +246,23 @@
 .panel-header {
     background: none;
 }
+
+.community-navbar {
+    display: inline-flex;
+    position: fixed;
+    justify-content: flex-end;
+    width: 100vw;
+    box-sizing: border-box;
+    padding: 7px;
+    align-items: center;
+}
+
+.community-navbar>.logout-button>img {
+    height: 16px;
+    margin-right: 10px;
+}
+
+.community-navbar>.logout-button {
+    display: flex;
+    align-items: center;
+}

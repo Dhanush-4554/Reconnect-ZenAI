@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import SideBar from './SideBar';
 import ChatPanel from './Channels/ChatPanel';
 import ChatArea from './Channels/ChatArea';
+import exit from './exit.png'
 import './communityPage.css';
 
 const socket = io.connect('http://localhost:5000');
@@ -46,12 +47,25 @@ const CommunitySupport = () => {
         return <p>Loading...</p>;
     }
 
+    const navigateHome = () => {
+        navigate('/home');
+    }
+
     return (
-        <div className="community-main-page">
-            <SideBar />
-            <ChatPanel onChannelChange={handleChannelChange} activeChannel={activeChannel} />
-            <ChatArea socket={socket} activeChannel={activeChannel} />
-        </div>
+        <>
+            <div className='community-navbar'>
+                <button className="logout-button" onClick={navigateHome}>
+                    <img src={exit} alt="" />
+                    Back to home
+                </button>
+            </div>
+
+            <div className="community-main-page">
+                <SideBar />
+                <ChatPanel onChannelChange={handleChannelChange} activeChannel={activeChannel} />
+                <ChatArea socket={socket} activeChannel={activeChannel} />
+            </div>
+        </>
     );
 };
 
