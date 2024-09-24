@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
+import './assistant.css';
 
 const FaceEmotionDetection = () => {
   const videoRef = useRef(null);
@@ -13,6 +14,7 @@ const FaceEmotionDetection = () => {
   const speechSynthesisRef = useRef(window.speechSynthesis);
   const [response, setResponse] = useState('');
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load models required for face detection and emotion analysis
   const loadModels = async () => {
@@ -65,7 +67,7 @@ const FaceEmotionDetection = () => {
       const recognition = new SpeechRecognition();
       recognition.interimResults = true;
       recognition.continuous = true;
-      
+
       recognition.onresult = event => {
         const result = event.results[event.results.length - 1][0].transcript;
         setTranscript(result);
@@ -95,16 +97,18 @@ const FaceEmotionDetection = () => {
   const stopRecording = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
-      setTimeout(()=>{
+      setTimeout(() => {
         generateAiResponse(transcript, emotion);
-    }, 500);
+      }, 500);
       setIsRecording(false);
     }
   };
 
   // AI Response Generation and TTS Integration
   const generateAiResponse = async (inputMessage, videoEmotion) => {
+
     try {
+      setIsLoading(true);
       console.log(inputMessage);
 
       const response = await fetch('http://localhost:5000/chat', {
@@ -157,6 +161,7 @@ const FaceEmotionDetection = () => {
           }
           // Keep the last line in the buffer if it's incomplete
           buffer = lines[lines.length - 1];
+          setIsLoading(false)
         }
       } else {
         setError('Failed to fetch response from AI');
@@ -184,25 +189,37 @@ const FaceEmotionDetection = () => {
     if (isSpeakingRef.current || speechBufferRef.current.length === 0) {
       return; // Don't speak if already speaking or buffer is empty
     }
-
-    // Extract the first complete sentence
+  
     const sentenceToSpeak = extractFirstCompleteSentence(speechBufferRef.current);
-
+  
     if (sentenceToSpeak) {
       isSpeakingRef.current = true;
-      speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim(); // Remove the spoken sentence from buffer
-
+      speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim();
+  
+      const jellyCircleElement = document.querySelector('.jelly-circle');
+      jellyCircleElement.classList.add('vibrating'); // Start vibration effect
+  
       utteranceRef.current = new SpeechSynthesisUtterance(sentenceToSpeak);
-      utteranceRef.current.rate = 1.3;
-
+      utteranceRef.current.rate = 1.01; // Adjust the speaking rate
+  
+      // Select a female voice
+      const voices = speechSynthesisRef.current.getVoices();
+      const femaleVoice = voices.find(voice => voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman'));
+      
+      if (femaleVoice) {
+        utteranceRef.current.voice = femaleVoice; // Set the female voice
+      }
+  
       utteranceRef.current.onend = () => {
         isSpeakingRef.current = false;
-        speakFromBuffer(); // Continue with the next sentence after finishing the current one
+        jellyCircleElement.classList.remove('vibrating'); // Stop vibration effect
+        speakFromBuffer(); // Continue with the next sentence
       };
-
+  
       speechSynthesisRef.current.speak(utteranceRef.current);
     }
   };
+  
 
   const extractFirstCompleteSentence = (text) => {
     const sentenceRegex = /[^.!?]+[.!?]+/g;
@@ -222,11 +239,16 @@ const FaceEmotionDetection = () => {
     // Load models and start the video when component mounts
     loadModels().then(startVideo);
     initializeSpeechRecognition();
-
+  
+    speechSynthesisRef.current.onvoiceschanged = () => {
+      // Optionally handle voice selection here
+      console.log('Voices changed:', speechSynthesisRef.current.getVoices());
+    };
+  
     const emotionInterval = setInterval(() => {
       detectEmotions();
     }, 100); // Runs every 100 ms for real-time detection
-
+  
     return () => {
       clearInterval(emotionInterval);
       if (recognitionRef.current) {
@@ -235,41 +257,62 @@ const FaceEmotionDetection = () => {
       stopSpeaking();
     };
   }, []);
+  
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h2>Real-Time Emotion Detection and AI Response</h2>
-      <div style={{ display: 'inline-block' }}>
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          width="720"
-          height="560"
-          style={{ border: '1px solid black' }}
-        />
+    <div className="container">
+      {/* Left Section: Video and Transcription/Emotion */}
+      <div className="left-section">
+        <div className="video-container">
+          <video ref={videoRef} autoPlay muted width="100%" height="auto" />
+        </div>
+        <div className="info-container">
+          <div className="transcription">
+            <h3>Transcribed Text</h3>
+            <p>{transcript}</p>
+          </div>
+          <div className="emotion">
+            <h3>Detected Emotion</h3>
+            <p>{emotion}</p>
+          </div>
+        </div>
       </div>
-      <h3>Detected Emotion: {emotion}</h3>
-      <div style={{ marginTop: '20px' }}>
+
+      {/* Right Section: AI Response */}
+      <div className="right-section">
+        <div className="circle-container">
+          {isLoading ? (
+            <div className="animation-container">
+              {/* Jelly circle animation */}
+              <div className="jelly-circle"></div>
+            </div>
+          ) : (
+            <div className="animation-container">
+              {/* Jelly circle animation */}
+              <div className="jelly-circle"></div>
+            </div>
+          )}
+        </div>
+
+        <div className="response-box">
+          <h3>AI Response:</h3>
+          {isLoading ? (
+            <div className="spinner"></div>
+          ) : (
+            <p className="typing-animation">{response}</p>
+          )}
+        </div>
+
+        {error && <p className="error-message">{error}</p>}
+      </div>
+
+      <div className="controls">
         <button onClick={startRecording} disabled={isRecording}>
           {isRecording ? 'Recording...' : 'Start Recording'}
         </button>
-        <button onClick={stopRecording} disabled={!isRecording} style={{ marginLeft: '10px' }}>
+        <button onClick={stopRecording} disabled={!isRecording}>
           Stop Recording
         </button>
-      </div>
-      <div style={{ marginTop: '20px', fontSize: '18px', color: '#333' }}>
-        <h3>Transcribed Text:</h3>
-        <p>{transcript}</p>
-      </div>
-      <div style={{ marginTop: '20px', fontSize: '18px', color: '#333' }}>
-      {response && (
-          <div className="response-section">
-            <h3>AI Response:</h3>
-            <p>{response}</p>
-          </div>
-        )}
-        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );

@@ -1,0 +1,262 @@
+/* General container styling with dark theme */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px;
+  height: 100vh;
+  background: linear-gradient(145deg, #0f0f0f, #1c1c1c);
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Left Section Styling */
+.left-section {
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  padding: 15px;
+  color: #eee;
+  height: 100%;
+}
+
+.video-container {
+  flex-grow: 1;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Recording button styling */
+.controls {
+  margin-top: 15px;
+  text-align: center;
+}
+
+button {
+  margin: 0 8px;
+  padding: 8px 16px;
+  font-size: 16px; /* Adjusted font size */
+  border: none;
+  background-color: #ff4b2b;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ff2a1a;
+}
+
+button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.info-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.transcription, .emotion {
+  width: 48%;
+  background-color: #2a2a2a;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  font-size: 18px; /* Adjusted font size */
+}
+
+/* Right Section Styling */
+.right-section {
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  padding: 15px;
+  color: #eee;
+  height: 100%;
+}
+
+.circle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  position: relative;
+  flex-grow: 1;
+}
+
+/* Jelly Circle Styling */
+.jelly-circle {
+  position: relative;
+  width: 280px; /* Adjusted size */
+  height: 280px; /* Adjusted size */
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: rotateCircle 10s linear infinite, jellyMorph 3s ease-in-out infinite;
+}
+
+/* Circle Revolving Animation */
+@keyframes rotateCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Jelly Morph Animation */
+@keyframes jellyMorph {
+  0%, 100% {
+    border-radius: 50%;
+  }
+  20% {
+    border-radius: 60% 40% 60% 40%;
+  }
+  40% {
+    border-radius: 50% 60% 40% 60%;
+  }
+  60% {
+    border-radius: 40% 60% 60% 40%;
+  }
+  80% {
+    border-radius: 50% 50% 50% 50%;
+  }
+}
+
+/* Vibration Effect */
+@keyframes vibration {
+  0% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(1px, -1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+/* Add a class for vibration when speaking */
+.vibrating {
+  animation: vibration 0.2s linear infinite; /* Adjust duration for smoothness */
+}
+
+/* Wave Effect */
+.jelly-circle::before {
+  content: '';
+  position: absolute;
+  width: 350px; /* Adjusted size */
+  height: 350px; /* Adjusted size */
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  animation: waveAnimation 4s infinite linear;
+  top: -35px;
+  left: -35px;
+  z-index: -1;
+}
+
+/* Wave Animation */
+@keyframes waveAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* AI Response Section */
+.response-box {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #2a2a2a;
+  width: 100%;
+  font-size: 20px; /* Adjusted font size */
+  color: #fff;
+  max-height: 400px; /* Set a maximum height */
+  height: 40%; /* Allow height to adjust based on content */
+  box-sizing: border-box; /* Ensure padding is included in height */
+  display: flex; /* Use flex to allow wrapping */
+  flex-direction: column; /* Stack items vertically */
+  justify-content: flex-start; /* Align content at the start */
+}
+
+/* Typing Animation */
+.response-box p {
+  text-align: left;
+  display: block;
+  white-space: normal;
+  overflow-wrap: break-word;
+  animation: typing 4s steps(30, end) infinite;
+  font-size: 1.8rem;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+/* Heading and Paragraph Font Style */
+h3 {
+  font-size: 26px; /* Adjusted font size */
+  color: #fff;
+}
+
+p {
+  font-size: 20px; /* Adjusted font size */
+  color: #fff;
+}
+
+.error-message {
+  color: red;
+  font-size: 16px; /* Adjusted font size */
+}
+
+/* Analyzing State Styles */
+.analyzing {
+  background-color: #444;
+}
+
+.spinner {
+  width: 150px; /* Adjusted size */
+  height: 150px; /* Adjusted size */
+  border: 6px solid transparent;
+  border-radius: 50%;
+  border-top-color: #fff;
+  border-right-color: #ccc;
+  border-bottom-color: #999;
+  border-left-color: #666;
+  animation: spin 1.5s linear infinite, wave 1.5s ease-in-out infinite;
+  margin: 15px auto;
+}
+
+/* Wave Effect */
+@keyframes wave {
+  0%, 100% {
+    border-width: 6px;
+  }
+  50% {
+    border-width: 10px;
+  }
+}
+
+/* Spinner Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
