@@ -60,73 +60,96 @@
   flex-grow: 1;
 }
 
-/* Jelly Circle Styling */
-.jelly-circle {
+.circle {
   position: relative;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  background-color: white;
+  width: 350px; /* Width of the circular border */
+  height: 350px; /* Height of the circular border */
+  border-radius: 50%; /* Make it circular */
+  background-color: #1a1a1a; /* Background color of the circle */
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: rotateCircle 10s linear infinite, jellyMorph 3s ease-in-out infinite;
+  border: 5px solid rgb(166, 166, 166);
 }
 
-@keyframes rotateCircle {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes jellyMorph {
-  0%, 100% {
-    border-radius: 50%;
-  }
-  20% {
-    border-radius: 60% 40% 60% 40%;
-  }
-  40% {
-    border-radius: 50% 60% 40% 60%;
-  }
-  60% {
-    border-radius: 40% 60% 60% 40%;
-  }
-  80% {
-    border-radius: 50% 50% 50% 50%;
-  }
-}
-
-/* Wave Effect */
-.jelly-circle::before {
+.circle::before {
   content: '';
   position: absolute;
-  width: 350px;
-  height: 350px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  animation: waveAnimation 4s infinite linear;
-  top: -35px;
-  left: -35px;
-  z-index: -1;
+  top: -10px; /* To extend the border outside */
+  left: -10px; /* To extend the border outside */
+  right: -10px; /* To extend the border outside */
+  bottom: -10px; /* To extend the border outside */
+  border-radius: 50%; /* Make it circular */
+  background: linear-gradient(45deg, pink, purple, blue); /* Gradient background */
+  z-index: -1; /* Place it behind the main circle */
 }
 
-@keyframes waveAnimation {
-  0% {
-    transform: scale(1);
+
+.container10 {
+  position: relative;
+  width: 300px; /* Width of the container for lines */
+  height: 300px; /* Height of the container for lines */
+}
+
+.line {
+  position: absolute;
+  width: 30px; /* Increased thickness of the lines */
+  background-color: #fff; /* White color for the lines */
+  bottom: 50%; /* Align to the middle of the container */
+  transform: translateY(50%); /* Adjust position to the middle */
+  border-radius: 20px; /* Rounded edges */
+  animation: listen 1.5s ease-in-out infinite; /* Smoother animation timing */
+}
+
+/* Set the left position and the initial heights with increased space */
+.layer-1 {
+  left: 5%; /* Position of the first line */
+  height: 20px; /* Short height */
+  animation-delay: 0s; /* No delay */
+}
+
+.layer-2 {
+  left: 25%; /* Position of the second line, increased spacing */
+  height: 30px; /* Slightly taller */
+  animation-delay: 0.2s; /* Delay for animation */
+}
+
+.layer-3 {
+  left: 45%; /* Position of the third line, increased spacing */
+  height: 40px; /* Medium height */
+  animation-delay: 0.4s; /* Delay for animation */
+}
+
+.layer-4 {
+  left: 65%; /* Position of the fourth line, increased spacing */
+  height: 30px; /* Slightly taller */
+  animation-delay: 0.6s; /* Delay for animation */
+}
+
+.layer-5 {
+  left: 85%; /* Position of the fifth line, increased spacing */
+  height: 20px; /* Short height */
+  animation-delay: 0.8s; /* Delay for animation */
+}
+
+@keyframes listen {
+  0%, 100% {
+    height: 20px; /* Start and end height */
   }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.5;
+  20% {
+    height: 100px; /* Increased height for the first peak */
   }
-  100% {
-    transform: scale(1);
-    opacity: 0;
+  40% {
+    height: 80px; /* Increased height for the second peak */
+  }
+  60% {
+    height: 110px; /* Increased height for the third peak */
+  }
+  80% {
+    height: 70px; /* Slightly lower */
   }
 }
+
 
 /* Bottom Controls: Start and Stop Recording Buttons */
 .controls {

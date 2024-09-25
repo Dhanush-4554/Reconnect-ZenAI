@@ -305,12 +305,24 @@ const FaceEmotionDetection = () => {
         <div className="right-section">
           <div className="circle-container">
             {isLoading ? (
-              <div className="animation-container">
-                <div className="jelly-circle"></div>
+              <div class="circle">
+                <div class="container10">
+                  <div class="line layer-1"></div>
+                  <div class="line layer-2"></div>
+                  <div class="line layer-3"></div>
+                  <div class="line layer-4"></div>
+                  <div class="line layer-5"></div>
+                </div>
               </div>
             ) : (
-              <div className="animation-container">
-                <div className="jelly-circle"></div>
+              <div class="circle">
+                <div class="container10">
+                  <div class="line layer-1"></div>
+                  <div class="line layer-2"></div>
+                  <div class="line layer-3"></div>
+                  <div class="line layer-4"></div>
+                  <div class="line layer-5"></div>
+                </div>
               </div>
             )}
           </div>
