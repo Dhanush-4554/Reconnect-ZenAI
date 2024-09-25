@@ -1,8 +1,9 @@
 /* General container styling with dark theme */
 .container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
   padding: 10px;
   height: 100vh;
   background: linear-gradient(145deg, #0f0f0f, #1c1c1c);
@@ -10,81 +11,44 @@
   font-family: 'Arial', sans-serif;
 }
 
+/* Main content: Video on the left, jelly circle on the right */
+.main-content {
+  display: flex;
+  width: 100%;
+  height: 80%; /* Adjusted height for main section */
+  justify-content: space-between;
+}
+
 /* Left Section Styling */
 .left-section {
-  width: 46%;
+  width: 48%; /* Slightly less than half */
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background-color: #1a1a1a;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-  padding: 15px;
-  color: #eee;
-  height: 100%;
-}
-
-.video-container {
-  flex-grow: 1;
-  border: 1px solid #333;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* Recording button styling */
-.controls {
-  margin-top: 15px;
-  text-align: center;
-}
-
-button {
-  margin: 0 8px;
-  padding: 8px 16px;
-  font-size: 16px; /* Adjusted font size */
-  border: none;
-  background-color: #ff4b2b;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #ff2a1a;
-}
-
-button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-}
-
-.info-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-}
-
-.transcription, .emotion {
-  width: 48%;
-  background-color: #2a2a2a;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #444;
-  font-size: 18px; /* Adjusted font size */
-}
-
-/* Right Section Styling */
-.right-section {
-  width: 46%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   background-color: #1a1a1a;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
   padding: 15px;
-  color: #eee;
+  height: 100%;
+}
+
+.video-container {
+  flex-grow: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+/* Right Section Styling */
+.right-section {
+  width: 48%; /* Slightly less than half */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  padding: 15px;
   height: 100%;
 }
 
@@ -92,7 +56,6 @@ button:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
   position: relative;
   flex-grow: 1;
 }
@@ -100,8 +63,8 @@ button:disabled {
 /* Jelly Circle Styling */
 .jelly-circle {
   position: relative;
-  width: 280px; /* Adjusted size */
-  height: 280px; /* Adjusted size */
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   background-color: white;
   display: flex;
@@ -110,7 +73,6 @@ button:disabled {
   animation: rotateCircle 10s linear infinite, jellyMorph 3s ease-in-out infinite;
 }
 
-/* Circle Revolving Animation */
 @keyframes rotateCircle {
   0% {
     transform: rotate(0deg);
@@ -120,7 +82,6 @@ button:disabled {
   }
 }
 
-/* Jelly Morph Animation */
 @keyframes jellyMorph {
   0%, 100% {
     border-radius: 50%;
@@ -139,27 +100,12 @@ button:disabled {
   }
 }
 
-/* Vibration Effect */
-@keyframes vibration {
-  0% { transform: translate(0); }
-  20% { transform: translate(-1px, 1px); }
-  40% { transform: translate(1px, -1px); }
-  60% { transform: translate(-1px, -1px); }
-  80% { transform: translate(1px, 1px); }
-  100% { transform: translate(0); }
-}
-
-/* Add a class for vibration when speaking */
-.vibrating {
-  animation: vibration 0.2s linear infinite; /* Adjust duration for smoothness */
-}
-
 /* Wave Effect */
 .jelly-circle::before {
   content: '';
   position: absolute;
-  width: 350px; /* Adjusted size */
-  height: 350px; /* Adjusted size */
+  width: 350px;
+  height: 350px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.3);
   animation: waveAnimation 4s infinite linear;
@@ -168,7 +114,6 @@ button:disabled {
   z-index: -1;
 }
 
-/* Wave Animation */
 @keyframes waveAnimation {
   0% {
     transform: scale(1);
@@ -183,80 +128,47 @@ button:disabled {
   }
 }
 
-/* AI Response Section */
-.response-box {
-  margin-top: 15px;
-  padding: 15px;
+/* Bottom Controls: Start and Stop Recording Buttons */
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+button {
+  margin: 0 8px;
+  padding: 8px 16px;
+  font-size: 16px;
+  border: none;
+  background-color: #ff4b2b;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ff2a1a;
+}
+
+button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.transcript-caption {
+  bottom: 80px;
+  width: fit-content;
+  text-align: center;
+  color: white;
+  font-size: 1em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
   border-radius: 8px;
-  background-color: #2a2a2a;
-  width: 100%;
-  font-size: 20px; /* Adjusted font size */
-  color: #fff;
-  max-height: 400px; /* Set a maximum height */
-  height: 40%; /* Allow height to adjust based on content */
-  box-sizing: border-box; /* Ensure padding is included in height */
-  display: flex; /* Use flex to allow wrapping */
-  flex-direction: column; /* Stack items vertically */
-  justify-content: flex-start; /* Align content at the start */
+  pointer-events: none;
+  position: sticky;
+  left: 20px;
+  align-content: center;
 }
 
-/* Typing Animation */
-.response-box p {
-  text-align: left;
-  display: block;
-  white-space: normal;
-  overflow-wrap: break-word;
-  animation: typing 4s steps(30, end) infinite;
-  font-size: 1.8rem;
-  font-family: 'Times New Roman', Times, serif;
-}
-
-/* Heading and Paragraph Font Style */
-h3 {
-  font-size: 26px; /* Adjusted font size */
-  color: #fff;
-}
-
-p {
-  font-size: 20px; /* Adjusted font size */
-  color: #fff;
-}
-
-.error-message {
-  color: red;
-  font-size: 16px; /* Adjusted font size */
-}
-
-/* Analyzing State Styles */
-.analyzing {
-  background-color: #444;
-}
-
-.spinner {
-  width: 150px; /* Adjusted size */
-  height: 150px; /* Adjusted size */
-  border: 6px solid transparent;
-  border-radius: 50%;
-  border-top-color: #fff;
-  border-right-color: #ccc;
-  border-bottom-color: #999;
-  border-left-color: #666;
-  animation: spin 1.5s linear infinite, wave 1.5s ease-in-out infinite;
-  margin: 15px auto;
-}
-
-/* Wave Effect */
-@keyframes wave {
-  0%, 100% {
-    border-width: 6px;
-  }
-  50% {
-    border-width: 10px;
-  }
-}
-
-/* Spinner Animation */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}

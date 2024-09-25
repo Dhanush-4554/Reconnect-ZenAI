@@ -175,7 +175,7 @@ const FaceEmotionDetection = () => {
     try {
       setIsLoading(true);
       console.log(inputMessage);
-  
+
       const response = await fetch('http://localhost:5000/chat', {
         method: 'POST',
         headers: {
@@ -185,11 +185,11 @@ const FaceEmotionDetection = () => {
           message: inputMessage, // Only send the new message to the server
         }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         const result = data.response; // Access the full AI response from the response body
-  
+
         setResponse(result); // Update the state with the full response
         addToSpeechBuffer(result); // Add the full response to the speech buffer
       } else {
@@ -220,37 +220,37 @@ const FaceEmotionDetection = () => {
     if (isSpeakingRef.current || speechBufferRef.current.length === 0) {
       return; // Don't speak if already speaking or buffer is empty
     }
-  
+
     const sentenceToSpeak = extractFirstCompleteSentence(speechBufferRef.current);
-  
+
     if (sentenceToSpeak) {
       isSpeakingRef.current = true;
       speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim();
-  
+
       const jellyCircleElement = document.querySelector('.jelly-circle');
       jellyCircleElement.classList.add('vibrating'); // Start vibration effect
-  
+
       utteranceRef.current = new SpeechSynthesisUtterance(sentenceToSpeak);
       utteranceRef.current.rate = 1.01; // Adjust the speaking rate
-  
+
       // Select a female voice
       const voices = speechSynthesisRef.current.getVoices();
       const femaleVoice = voices.find(voice => voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman'));
-      
+
       if (femaleVoice) {
         utteranceRef.current.voice = femaleVoice; // Set the female voice
       }
-  
+
       utteranceRef.current.onend = () => {
         isSpeakingRef.current = false;
         jellyCircleElement.classList.remove('vibrating'); // Stop vibration effect
         speakFromBuffer(); // Continue with the next sentence
       };
-  
+
       speechSynthesisRef.current.speak(utteranceRef.current);
     }
   };
-  
+
 
   const extractFirstCompleteSentence = (text) => {
     const sentenceRegex = /[^.!?]+[.!?]+/g;
@@ -270,16 +270,16 @@ const FaceEmotionDetection = () => {
     // Load models and start the video when component mounts
     loadModels().then(startVideo);
     initializeSpeechRecognition();
-  
+
     speechSynthesisRef.current.onvoiceschanged = () => {
       // Optionally handle voice selection here
       console.log('Voices changed:', speechSynthesisRef.current.getVoices());
     };
-  
+
     const emotionInterval = setInterval(() => {
       detectEmotions();
     }, 100); // Runs every 100 ms for real-time detection
-  
+
     return () => {
       clearInterval(emotionInterval);
       if (recognitionRef.current) {
@@ -288,55 +288,35 @@ const FaceEmotionDetection = () => {
       stopSpeaking();
     };
   }, []);
-  
+
 
   return (
     <div className="container">
-      {/* Left Section: Video and Transcription/Emotion */}
-      <div className="left-section">
-        <div className="video-container">
-          <video ref={videoRef} autoPlay muted width="100%" height="auto" />
-        </div>
-        <div className="info-container">
-          <div className="transcription">
-            <h3>Transcribed Text</h3>
-            <p>{transcript}</p>
+      <div className="main-content">
+        {/* Left Section: Video */}
+        <div className="left-section">
+          <div className="video-container">
+            <video ref={videoRef} autoPlay muted width="100%" height="auto" />
+            <div className="transcript-caption">{transcript}</div>
           </div>
-          <div className="emotion">
-            <h3>Detected Emotion</h3>
-            <p>{emotion}</p>
+        </div>
+
+        {/* Right Section: Jelly Circle */}
+        <div className="right-section">
+          <div className="circle-container">
+            {isLoading ? (
+              <div className="animation-container">
+                <div className="jelly-circle"></div>
+              </div>
+            ) : (
+              <div className="animation-container">
+                <div className="jelly-circle"></div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Right Section: AI Response */}
-      <div className="right-section">
-        <div className="circle-container">
-          {isLoading ? (
-            <div className="animation-container">
-              {/* Jelly circle animation */}
-              <div className="jelly-circle"></div>
-            </div>
-          ) : (
-            <div className="animation-container">
-              {/* Jelly circle animation */}
-              <div className="jelly-circle"></div>
-            </div>
-          )}
-        </div>
-
-        <div className="response-box">
-          <h3>AI Response:</h3>
-          {isLoading ? (
-            <div className="spinner"></div>
-          ) : (
-            <p className="typing-animation">{response}</p>
-          )}
-        </div>
-
-        {error && <p className="error-message">{error}</p>}
-      </div>
-
+      {/* Bottom Controls: Start and Stop Recording Buttons */}
       <div className="controls">
         <button onClick={startRecording} disabled={isRecording}>
           {isRecording ? 'Recording...' : 'Start Recording'}
