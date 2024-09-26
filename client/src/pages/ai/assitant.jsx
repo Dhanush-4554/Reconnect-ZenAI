@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
 import './assistant.css';
+import axios from 'axios'
 
 const FaceEmotionDetection = () => {
   const videoRef = useRef(null);
@@ -8,10 +9,6 @@ const FaceEmotionDetection = () => {
   const [transcript, setTranscript] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef(null);
-  const speechBufferRef = useRef('');
-  const isSpeakingRef = useRef(false);
-  const utteranceRef = useRef(null);
-  const speechSynthesisRef = useRef(window.speechSynthesis);
   const [response, setResponse] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -104,73 +101,6 @@ const FaceEmotionDetection = () => {
     }
   };
 
-  // AI Response Generation and TTS Integration
-  // const generateAiResponse = async (inputMessage, videoEmotion) => {
-
-  //   try {
-  //     setIsLoading(true);
-  //     console.log(inputMessage);
-
-  //     const response = await fetch('http://localhost:5000/chat', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         message: inputMessage, // Only send the new message to the server
-  //       }),
-  //     });
-
-  //     if (response.ok) {
-  //       const reader = response.body.getReader();
-  //       const decoder = new TextDecoder();
-  //       let buffer = '';
-  //       let result = '';
-
-  //       // Stream processing
-  //       while (true) {
-  //         const { done, value } = await reader.read();
-  //         if (done) break;
-
-  //         // Decode the value and append to buffer
-  //         buffer += decoder.decode(value, { stream: true });
-
-  //         // Split buffer into lines
-  //         const lines = buffer.split('\n');
-
-  //         // Process each line except the last one (which might be incomplete)
-  //         for (let i = 0; i < lines.length - 1; i++) {
-  //           const line = lines[i].trim();
-  //           if (line) {
-  //             try {
-  //               const parsed = JSON.parse(line);
-  //               if (parsed.chunk === '[DONE]') {
-  //                 // Stop processing when "[DONE]" is received
-  //                 return;
-  //               }
-  //               if (parsed.chunk) {
-  //                 result += parsed.chunk; // Append the chunk to the result
-  //                 console.log(result);
-  //                 addToSpeechBuffer(parsed.chunk); // Add the new text to speech buffer
-  //                 setResponse(result); // Update response state with partial result
-  //               }
-  //             } catch (err) {
-  //               console.error('Error parsing JSON', err);
-  //             }
-  //           }
-  //         }
-  //         // Keep the last line in the buffer if it's incomplete
-  //         buffer = lines[lines.length - 1];
-  //         setIsLoading(false)
-  //       }
-  //     } else {
-  //       setError('Failed to fetch response from AI');
-  //     }
-  //   } catch (error) {
-  //     setError('An error occurred while fetching the response.');
-  //   }
-  // };
-
   const generateAiResponse = async (inputMessage, videoEmotion) => {
     try {
       setIsLoading(true);
@@ -182,7 +112,8 @@ const FaceEmotionDetection = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: inputMessage, // Only send the new message to the server
+          message: inputMessage,
+          emotion:videoEmotion // Only send the new message to the server
         }),
       });
 
@@ -191,7 +122,7 @@ const FaceEmotionDetection = () => {
         const result = data.response; // Access the full AI response from the response body
 
         setResponse(result); // Update the state with the full response
-        addToSpeechBuffer(result); // Add the full response to the speech buffer
+        fetchAndPlayAudio(result); // Add the full response to the speech buffer
       } else {
         setError('Failed to fetch response from AI');
       }
@@ -202,79 +133,110 @@ const FaceEmotionDetection = () => {
     }
   };
 
-  const addToSpeechBuffer = (text) => {
-    speechBufferRef.current += text; // Append new text to the buffer
-
-    // Check if there's a complete sentence and no speech is ongoing
-    if (!isSpeakingRef.current && hasCompleteSentence(speechBufferRef.current)) {
-      speakFromBuffer(); // Start speaking if the buffer has a complete sentence
-    }
-  };
-
-  const hasCompleteSentence = (text) => {
-    const sentenceRegex = /[.!?]+/g;
-    return sentenceRegex.test(text); // Check for complete sentences (ending with . ! or ?)
-  };
-
-  const speakFromBuffer = () => {
-    if (isSpeakingRef.current || speechBufferRef.current.length === 0) {
-      return; // Don't speak if already speaking or buffer is empty
-    }
-
-    const sentenceToSpeak = extractFirstCompleteSentence(speechBufferRef.current);
-
-    if (sentenceToSpeak) {
-      isSpeakingRef.current = true;
-      speechBufferRef.current = speechBufferRef.current.slice(sentenceToSpeak.length).trim();
-
-      const jellyCircleElement = document.querySelector('.jelly-circle');
-      jellyCircleElement.classList.add('vibrating'); // Start vibration effect
-
-      utteranceRef.current = new SpeechSynthesisUtterance(sentenceToSpeak);
-      utteranceRef.current.rate = 1.01; // Adjust the speaking rate
-
-      // Select a female voice
-      const voices = speechSynthesisRef.current.getVoices();
-      const femaleVoice = voices.find(voice => voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman'));
-
-      if (femaleVoice) {
-        utteranceRef.current.voice = femaleVoice; // Set the female voice
+  //sk_21320ddfcc940a85398ff696f757e74ffefe83a69d54b76a
+  const fetchAndPlayAudio = async (text) => {
+    console.log(text);
+  
+    const voiceId = 'cgSgspJ2msm6clMCkdW9';
+    const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`;
+    const apiKey = 'sk_21320ddfcc940a85398ff696f757e74ffefe83a69d54b76a';
+  
+    const data = {
+      text: text,
+      voice_settings: {
+        stability: 0.1,
+        similarity_boost: 0.3,
+      },
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'xi-api-key': apiKey,
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (response.body) {
+        const reader = response.body.getReader();
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBufferQueue = [];
+        let isPlaying = false;
+        let isFirstPlayback = true; // New flag for first-time check
+  
+        // Buffer at least 3 chunks for the first playback only
+        const MIN_BUFFERED_CHUNKS = 5;
+  
+        const processChunk = async () => {
+          const { done, value } = await reader.read();
+          if (done) {
+            console.log('All audio chunks processed.');
+            return;
+          }
+  
+          console.log('Received chunk:', value);
+  
+          // Decode and queue the audio chunk
+          try {
+            const audioBuffer = await audioContext.decodeAudioData(value.buffer);
+            audioBufferQueue.push(audioBuffer);
+  
+            // Check if it's the first time playing, buffer minimum chunks
+            if (isFirstPlayback) {
+              if (audioBufferQueue.length >= MIN_BUFFERED_CHUNKS && !isPlaying) {
+                isFirstPlayback = false; // Disable the first-time check after starting playback
+                playNextChunk();
+              }
+            } else {
+              // For subsequent chunks, start playback as soon as one is available
+              if (!isPlaying) {
+                playNextChunk();
+              }
+            }
+          } catch (error) {
+            console.error('Error decoding audio chunk:', error);
+          }
+  
+          // Continue reading the next chunk
+          processChunk();
+        };
+  
+        const playNextChunk = () => {
+          if (audioBufferQueue.length === 0) {
+            isPlaying = false;
+            return;
+          }
+  
+          isPlaying = true;
+          const nextBuffer = audioBufferQueue.shift();
+          const chunkSource = audioContext.createBufferSource();
+          chunkSource.buffer = nextBuffer;
+          chunkSource.connect(audioContext.destination);
+  
+          chunkSource.onended = () => {
+            isPlaying = false;
+            playNextChunk(); // Play the next chunk
+          };
+  
+          chunkSource.start(); // Start playback of the current chunk
+        };
+  
+        // Start processing chunks immediately
+        processChunk();
       }
-
-      utteranceRef.current.onend = () => {
-        isSpeakingRef.current = false;
-        jellyCircleElement.classList.remove('vibrating'); // Stop vibration effect
-        speakFromBuffer(); // Continue with the next sentence
-      };
-
-      speechSynthesisRef.current.speak(utteranceRef.current);
+    } catch (error) {
+      console.error('Error fetching audio:', error);
     }
   };
-
-
-  const extractFirstCompleteSentence = (text) => {
-    const sentenceRegex = /[^.!?]+[.!?]+/g;
-    const match = text.match(sentenceRegex); // Extract the first complete sentence
-    return match ? match[0].trim() : ''; // Ensure we return the first complete sentence
-  };
-
-  const stopSpeaking = () => {
-    if (speechSynthesisRef.current.speaking) {
-      speechSynthesisRef.current.cancel();
-    }
-    isSpeakingRef.current = false;
-    speechBufferRef.current = ''; // Clear the speech buffer
-  };
+  
+  
 
   useEffect(() => {
     // Load models and start the video when component mounts
     loadModels().then(startVideo);
     initializeSpeechRecognition();
-
-    speechSynthesisRef.current.onvoiceschanged = () => {
-      // Optionally handle voice selection here
-      console.log('Voices changed:', speechSynthesisRef.current.getVoices());
-    };
 
     const emotionInterval = setInterval(() => {
       detectEmotions();
@@ -285,7 +247,6 @@ const FaceEmotionDetection = () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      stopSpeaking();
     };
   }, []);
 
