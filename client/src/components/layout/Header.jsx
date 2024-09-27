@@ -16,8 +16,8 @@ const Header = () => {
     const handleAssistNavigate = () => {
         navigate('/assist')
     }
-    const handleBlogNavigate = () => {
-        navigate('/blog')
+    const handleHomeNavigate = () => {
+        navigate('/')
     }
 
     return (
@@ -28,26 +28,26 @@ const Header = () => {
                 </div>
                 {isLoggedIn() ? (
                     <div className="home-nav-links">
+                        <p onClick={handleHomeNavigate}>Home</p>
                         <p onClick={handleAssistNavigate}>ZenAI</p>
                         <p onClick={handleChannelNavigate}>Community</p>
-                        <p onClick={handleBlogNavigate}>Blogs</p>
                         <Logout />
                     </div>
                 ) : (
 
-                    <div className="nav-items">
-                        <button
-                            className="poppins-medium"
+                    <div>
+                        <p
+                            className="navLink"
                             onClick={() => navigate("/register")}
                         >
                             Register
-                        </button>
-                        <button
-                            className="poppins-medium"
+                        </p>
+                        <p
+                            className="navLink"
                             onClick={() => navigate("/login")}
                         >
                             Login
-                        </button>
+                        </p>
                     </div>
                 )}
             </div>

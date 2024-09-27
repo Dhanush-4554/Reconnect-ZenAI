@@ -1,6 +1,7 @@
 /* Font Styles */
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
 .ubuntu-light {
   font-family: "Ubuntu", sans-serif;
   font-weight: 300;
@@ -81,7 +82,7 @@
 
 /* Login.css */
 
-.Login{
+.Login {
   background: #141e30;
   background: -webkit-linear-gradient(to right, #243b55, #141e30);
   background: linear-gradient(to right, #243b55, #141e30);
@@ -100,10 +101,9 @@
   padding: 20px;
   border: 3px solid #6050dc;
   border-radius: 20px;
-  /* text-align: center; */
 }
 
-.login-container h2{
+.login-container h2 {
   font-size: 2rem;
   margin-bottom: 5px;
   text-align: center;
@@ -120,10 +120,6 @@
 }
 
 .login-input {
-  /* padding: 10px;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box; */
   width: 90%;
   padding: 10px;
   margin-top: 5px;
@@ -264,13 +260,11 @@ hr {
 }
 
 .bn632-hover.bn20 {
-  background-image: linear-gradient(
-    to right,
-    #667eea,
-    #764ba2,
-    #6b8dd6,
-    #8e37d7
-  );
+  background-image: linear-gradient(to right,
+      #667eea,
+      #764ba2,
+      #6b8dd6,
+      #8e37d7);
   box-shadow: 0 4px 10px 0 rgba(116, 79, 168, 0.75);
 }
 
@@ -282,27 +276,4 @@ hr {
 .success-message {
   color: green;
   margin-top: 10px;
-}
-
-/* Logout Css */
-.logout-button {
-  background-color: #ff4b5c;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.logout-button:hover {
-  background-color: #ff1f3a;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-}
-
-.logout-button:active {
-  background-color: #e20026;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

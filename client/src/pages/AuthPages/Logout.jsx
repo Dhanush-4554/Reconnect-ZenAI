@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './authStyles.css';
 
 const Logout = () => {
     const navigate = useNavigate();
@@ -31,9 +30,9 @@ const Logout = () => {
 
     return (
         <div>
-            <button className="logout-button" onClick={handleLogout}>
+            <p onClick={handleLogout}>
                 Logout
-            </button>
+            </p>
         </div>
     );
 };

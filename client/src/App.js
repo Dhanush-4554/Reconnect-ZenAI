@@ -7,6 +7,7 @@ import DMPage from './pages/CommunitySupport/DM/DMPage';
 import FaceEmotionDetection from './pages/ai/assitant';
 import './App.css';
 import { useEffect } from 'react';
+import LandingPage from './pages/landing/LandingPage';
 
 function App() {
   const clearCookies = () => {
@@ -28,8 +29,8 @@ function App() {
 
   return (
     <Routes>
-      <Route exact path="/" element={<HomePage />} />
-      <Route exact path="/home" element={<HomePage />} />
+      <Route exact path="/" element={<LandingPage />} />
+      <Route exact path="/home" element={<LandingPage />} />
       <Route exact path="/register" element={<Register />} />
       <Route exact path="/login" element={<Login />} />
       <Route exact path="/community" element={<CommunitySupport />} />
