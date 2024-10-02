@@ -6,7 +6,7 @@
 ## Overview
 
 **Reconnect: Rehabilitation Online** is a uniquely crafted, AI-powered mental health and emotional support platform. It is designed to bring solace to individuals navigating through the waves of stress, anxiety, and depression. At its heart lies **Zen AI**, a deeply empathetic personal AI counselor, whose gentle guidance comes through the symphony of voice, facial recognition, and text-based interaction. Privacy and security are woven deeply into the platform’s essence, ensuring that every whisper of the user’s emotions remains protected.
-![Reconnect Workflow](RECONNECT_workflow.jpg)
+![Reconnect Workflow](Reconnect_workflow.jpg)
 Through community-driven experiences, users can share their stories of triumph and healing, and find strength in the wisdom of others, creating a virtual embrace of hope and solidarity.
 
 ## Features
