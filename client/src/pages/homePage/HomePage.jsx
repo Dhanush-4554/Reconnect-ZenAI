@@ -12,7 +12,7 @@ const HomePage = () => {
       <div className="home-content">
         <div className="home-content-left">
           <div className="head-line">
-            Reconnect: Rehabilitaion Online
+            Reconnect
           </div>
 
           <div className="explain-home">

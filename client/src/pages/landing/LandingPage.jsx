@@ -44,7 +44,7 @@ const LandingPage = () => {
                             About Us
                         </div>
                         <div className="head-line">
-                            Reconnect: Rehabilitaion Online
+                            Reconnect : AI Powered Personal Counselor
                         </div>
                         <p
                             className="assist-button hover-filled-slide-right"

@@ -4,10 +4,11 @@ import Login from './pages/AuthPages/Login';
 import HomePage from './pages/homePage/HomePage';
 import Register from './pages/AuthPages/Register';
 import DMPage from './pages/CommunitySupport/DM/DMPage';
-import FaceEmotionDetection from './pages/ai/assitant';
+import FaceEmotionDetection from './pages/ai/test'
 import './App.css';
 import { useEffect } from 'react';
 import LandingPage from './pages/landing/LandingPage';
+import Quiz from './pages/scoreCheck/scorecheck';
 
 function App() {
   const clearCookies = () => {
@@ -36,6 +37,7 @@ function App() {
       <Route exact path="/community" element={<CommunitySupport />} />
       <Route exact path="/community/dm" element={<DMPage />} />
       <Route exact path="/assist" element={<FaceEmotionDetection />} />
+      <Route exact path="/quiz" element={<Quiz />} />
     </Routes>
   );
 }

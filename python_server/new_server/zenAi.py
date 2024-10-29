@@ -1,10 +1,12 @@
-from flask import Flask, request, Response, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import vertexai
 from vertexai.generative_models import GenerativeModel
 import logging
 import re
+import torch
+from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 
 # Initialize Flask app and CORS
 app = Flask(__name__)
@@ -17,6 +19,11 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 logging.info("Initializing Vertex AI...")
 vertexai.init(project="sri-devi-hack", location="asia-south1")
 model = GenerativeModel("gemini-1.5-pro-002")
+
+# Load Wav2Vec model and processor
+logging.info("Loading Wav2Vec model...")
+processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
+emotion_model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")  # Using the same model for transcription
 
 # Create a chat session at the global level so the context is preserved
 chat = model.start_chat()
@@ -38,25 +45,64 @@ def handle_exception(e):
     logging.error("An unhandled exception occurred: %s", str(e))
     return jsonify({'error': 'Internal Server Error'}), 500
 
+def transcribe_audio(audio_data):
+    # Preprocess audio data
+    input_values = processor(audio_data, return_tensors="pt", padding="longest").input_values
+    with torch.no_grad():
+        logits = emotion_model(input_values).logits
+    predicted_ids = torch.argmax(logits, dim=-1)
+    transcription = processor.batch_decode(predicted_ids)[0]
+    return transcription
+
+def analyze_emotion(transcription):
+    # Basic emotion detection logic (this can be enhanced with a proper model)
+    emotion_keywords = {
+        "happy": "joy",
+        "sad": "sadness",
+        "angry": "anger",
+        "excited": "joy",
+        "anxious": "anxiety",
+        "frustrated": "frustration"
+    }
+    
+    for keyword, emotion in emotion_keywords.items():
+        if keyword in transcription.lower():
+            return emotion
+    
+    return "neutral"  # Default if no emotion is detected
+
 @app.route('/chat', methods=['POST'])
 def chat_response():
     logging.info("Received a chat request.")
     
     data = request.json
     user_message = data.get('message')
-    emotion = data.get('emotion')  # Receive the emotion from the client
+    audio = data.get('audio')  # Receive audio data if available
 
-    if not user_message:
-        logging.warning("No message provided in the request.")
-        return jsonify({'error': 'No message provided'}), 400
+    if not user_message and not audio:
+        logging.warning("No message or audio provided in the request.")
+        return jsonify({'error': 'No message or audio provided'}), 400
     
-    if not emotion:
-        logging.warning("No emotion provided in the request.")
-        return jsonify({'error': 'No emotion provided'}), 400
+    # If audio is provided, process it to get the transcription and emotion
+    if audio:
+        try:
+            # Assuming audio is sent as binary data in the request
+            audio_data = audio  # You may need to decode or convert this based on your frontend implementation
+            transcription = transcribe_audio(audio_data)
+            logging.info("Transcription from audio: %s", transcription)
+
+            # Analyze emotion from the transcription
+            emotion = analyze_emotion(transcription)
+            logging.info("Detected emotion: %s", emotion)
+        except Exception as e:
+            logging.error("Error processing audio: %s", str(e))
+            return jsonify({'error': 'Error processing audio'}), 500
+    else:
+        emotion = "neutral"  # Default emotion if no audio provided
 
     try:
         # Construct the prompt using the user's message and emotion
-        full_prompt = f"User's message: {user_message}\nFace Emotion: {emotion}. Respond accordingly."
+        full_prompt = f"User's message: {user_message}\nTranscription Emotion: {emotion}. Respond accordingly."
         logging.debug("Constructed full prompt: %s", full_prompt)
 
         # Use streaming to send the prompt to Vertex AI and get the response
@@ -97,8 +143,6 @@ def quiz_score():
         full_prompt += f"Question: {question}\nAnswer: {answer}\n"
 
     # Add a conclusion based on score
-    # Add a conclusion based on score
-    logging.info("Score : ",score)
     res = ""
     if score >= 3:
         res += (
@@ -115,20 +159,9 @@ def quiz_score():
             "to help improve their mood and maintain emotional balance. It's a proactive step toward better mental health."
         )
 
-
     logging.debug("Constructed full prompt: %s", full_prompt)
 
     try:
-        # # Use streaming to send the prompt to Vertex AI and get the response
-        # stream = chat.send_message(full_prompt, stream=True)
-
-        # # Collect and concatenate all chunks from the stream
-        # response_text = ''.join([message.text for message in stream])
-        
-        # response_text = re.sub(r'\*', '', response_text)
-
-        # logging.info("Full AI response: %s", response_text)
-
         # Return the full response as JSON
         return jsonify({'response': res}), 200
 
